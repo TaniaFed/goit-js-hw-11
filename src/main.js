@@ -9,8 +9,11 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
+
 const searchFormEl = document.querySelector('.js-search-form');
 const galleryEl = document.querySelector('.js-gallery');
+const loader = document.querySelector('.loader');
+
 
 const onSearchFormSubmit = event => {
     event.preventDefault();
@@ -25,6 +28,9 @@ const onSearchFormSubmit = event => {
 
         return;
     }
+
+    loader.style.display = 'block';
+    galleryEl.innerHTML = '';
     
     fetchPhotosByQuery(searchedQuery)
         .then(data => {
@@ -44,12 +50,19 @@ const onSearchFormSubmit = event => {
             galleryEl.innerHTML = galleryTemplate;
         })
         .catch(err => {
-        console.log(err);
-    });
+            if (gallery.innerHTML === '') {
+                console.err('Error fetching data:', err);
+                iziToast.err({
+                    title: 'Error',
+                    message: 'An error occurred while searching for images',
+                });
+            }
+            // console.log(err);
+        })
+        .finally(() => {
+            loader.style.display = 'none';
+        });
 };
-
-// loader.style.display = 'block';
-// gallery.innerHTML = '';
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 
