@@ -39,18 +39,22 @@ const onSearchFormSubmit = event => {
                     message: 'Sorry, there are no images matching your search query. Please try again!',
                 });
                 galleryEl.innerHTML = '';
-
                 searchFormEl.reset();
 
                 return;
             }
 
-            const galleryTemplate = data.hits.map(el => createGalleryCardTemplate(el)).join('');
-            
+            const galleryTemplate = data.hits.map(el => createGalleryCardTemplate(el)).join(''); 
             galleryEl.innerHTML = galleryTemplate;
+
+            const lightbox = new SimpleLightbox('.gallery-card a.gallery-link  ', {
+                // captionsData: 'alt',
+                // captionDelay: 250,
+            });
+            console.log(lightbox);
         })
         .catch(err => {
-            if (gallery.innerHTML === '') {
+            if (galleryEl.innerHTML === '') {
                 console.err('Error fetching data:', err);
                 iziToast.err({
                     title: 'Error',
@@ -62,16 +66,11 @@ const onSearchFormSubmit = event => {
         .finally(() => {
             loader.style.display = 'none';
         });
+    
 };
 
 searchFormEl.addEventListener('submit', onSearchFormSubmit);
 
-const lightbox = new SimpleLightbox('.gallery .js-gallery a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-});
-
-console.log(lightbox);
 
 
 
